@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Guvi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /*nav style*/
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #b134da;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+
+        .active {
+            background-color: #4CAF50;
+        }
+
+        /*nav style ends*/
+        .cont {
+            background-color: palegoldenrod;
+            opacity: 0.75;
+        }
+
+        .container {
+            background-image: url('1.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .signupbtn {
+            background-color: green;
+            color: white;
+            padding: 10px 6px;
+            margin: 0px 0px 15px 272px;
+            border: none;
+            cursor: pointer;
+            width: 14%;
+            border-radius: 6px;
+        }
+
+        .resetbtn {
+            background-color: #e64949;
+            color: white;
+            padding: 10px 6px;
+            margin: 0px 0px 15px 2px;
+            border: none;
+            cursor: pointer;
+            width: 13%;
+            border-radius: 6px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-family: cursive;
+            color: #db1bde;
+            margin: -89px 0px 0px 0px;
+            padding: 15px;
+        }
+
+        .name {
+            width: 30%;
+            padding: 11px 9px;
+            margin: 0px 0px 15px 272px;
+            border-radius: 4px;
+            border: 1px;
+        }
+
+        form {
+            padding: 279px;
+            margin: -74px 0px 0px 0px
+        }
+
+        .sign {
+            margin: 0px 0px 0px 330px;
+        }
+
+        .items {
+            color: #ffffff;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+            cursor: pointer;
+            background-color: #4967e6;
+        }
+
+        .sel {
+            margin: 0px 0px 0px 90px;
+        }
+
+        table {
+            border-collapse: collapse;
+
+        }
+
+        th,
+        td {
+            padding: 15px;
+        }
+
+        table,
+        th,
+        td {
+
+            border: 1px solid grey;
+            color: blue
+        }
+
+        td {
+            font-size: 20px;
+        }
+
+        .table {
+            padding: 40px;
+        }
+
+        img {
+            cursor: pointer
+        }
+
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            padding-top: 100px;
+            /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 60px;
+            border: 1px solid #888;
+            width: 40%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+
+
+        function sendData() {
+            //alert(localStorage.getItem("id"))
+            var data = {
+                user_id: localStorage.getItem("id"),
+                item: document.getElementById("items").value,
+                qty: document.getElementById("qty").value
+            };
+
+            fetch("http://localhost:3030/dashboard", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }).then(function (data) {
+                console.log(data.json());
+
+            })
+        }
+        function view() {
+            fetch("http://localhost:3030/view", {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+
+            }).then(async function (data) {
+                //console.log(data.json())
+                var result = await data.json();
+                console.log(result);
+                for (i = 0; i < result.length; i++) {
+                    var row = table.insertRow();
+                    var cell0 = row.insertCell(0);
+                    cell0.style.width = "100px";
+                    cell0.innerHTML = result[i].item;
+
+                    var cell1 = row.insertCell(1);
+                    cell1.style.width = "100px"
+                    cell1.innerHTML = result[i].qty;
+
+                    var cell2 = row.insertCell(2);
+                    var edit_icon = document.createElement("h5");
+                    cell2.style.width = "100px"
+                    edit_icon.setAttribute("class", "sourceText");
+                    edit_icon.innerHTML = '<i class="fa fa-edit" style="font-size:26px;cursor:pointer" aria-hidden="true"></i>';
+                    cell2.appendChild(edit_icon);
+
+                    var cell3 = row.insertCell(3);
+                    var del_icon = document.createElement("h5");
+                    cell3.style.width = "100px"
+                    del_icon.setAttribute("class", "sourceText");
+                    del_icon.innerHTML = '<i class="fa fa-trash" style="font-size:26px;cursor:pointer"aria-hidden="true"></i>';
+                    del_icon.id = "icon" + i;
+                    cell3.appendChild(del_icon);
+                    (function (i) {
+                        del_icon.onclick = function () {
+                            //alert(result[i].item)
+                            //sendData(i, result[i].item);
+                            var td = event.target.parentNode;
+                            var tr = td.parentNode; // the row to be removed
+                            tr.parentNode.remove(tr);
+                            var data = {
+                                item: result[i].item
+                            };
+                            fetch("http://localhost:3030/products", {
+                                method: "delete",
+                                headers: {
+                                    Accept: "application/json",
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(data)
+                            }).then(function (data) {
+                                console.log(data.json());
+
+                            })
+                        }
+                    })(i);
+
+                    (function (i) {
+                        edit_icon.onclick = function () {
+                            var item = result[i].item
+                            var obj_id = result[i]._id;
+                            localStorage.setItem('obj_id', obj_id);
+                            document.getElementById("myModal").style.display = "block";
+
+                            // document.getElementById("update").onclick = function () {
+                            //     update1(obj_id);
+                            // };
+
+
+                        }
+                    })(i);
+
+
+
+                }
+
+            })
+
+        }
+
+        function update1() {
+            //alert("hello")
+            var id  = localStorage.getItem("obj_id");
+            var data = {
+                item: document.getElementById("items1").value,
+                qty: document.getElementById("qty1").value
+            };
+            fetch("http://localhost:3030/update/" + id, {
+                method: "PUT",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }).then(function (data) {
+                console.log(data.json());
+
+            })
+        }
+        window.onload = function () {
+
+            var close_icon = document.getElementsByClassName("close")[0];
+            close_icon.onclick = function () {
+                document.getElementById("myModal").style.display = "none";
+            }
+        }
+
+
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <ul>
+            <li><a href="#home">My Dashboard</a></li>
+            <li style="float:right"><a href="register.html"><span class="fa fa-sign-in"></span> Log Out</a></li>
+            <li style="float:right"><a class="active" href="register.html"><span class="fa fa-user"></span> Home</a>
+            </li>
+
+        </ul>
+
+
+        <form>
+            <div class="cont">
+
+                <h2>Items Add to Cart</h2>
+                <div class="sel">
+                    <b><label for="items" style="font-size: 20px;">Choose Electronics Items:</label></b>
+
+                    <select class="items" id="items">
+                        <option value="Mobile">Mobile</option>
+                        <option value="Power Bank">Power Bank</option>
+                        <option value="HeadPhones">Headphones</option>
+                        <option value="WiFi Camera">WiFi Security Camera</option>
+                    </select>
+                    <b><label for="qty" style="font-size: 20px;">Quantity:</label></b>
+                    <input type="number" class="items" id="qty" min="1" max="5" value="1" name="qty"><br>
+
+                </div><br><br><br><br><br><br>
+
+                <input type="submit" value="Add" id="adprod" class="signupbtn" onclick="sendData(); return false;">
+                <input type="reset" value="Cancel" class="resetbtn">
+                <input type="submit" value="View Cart" class="resetbtn" onclick="view(); return false;">
+                <div class="table">
+                    <h4>User Added Items:</h4>
+                    <table id="table">
+                        <tr>
+                            <td style="color:red;">Item</td>
+                            <td style="color:red;">Quantity</td>
+                            <td style="color:red;">Edit </td>
+                            <td style="color:red;">Delete </td>
+                        </tr>
+                    </table>
+                </div>
+
+
+
+            </div>
+            <d iv id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div class="sel">
+                        <b><label for="items" style="font-size: 20px;">Choose Electronics Items:</label></b>
+
+                        <select class="items" id="items1">
+                            <option value="Mobile">Mobile</option>
+                            <option value="Power Bank">Power Bank</option>
+                            <option value="HeadPhones">Headphones</option>
+                            <option value="WiFi Camera">WiFi Security Camera</option>
+                        </select>
+                        <b><label for="qty" style="font-size: 20px;">Quantity:</label></b>
+                        <input type="number" class="items" id="qty1" min="1" max="5" value="1" name="qty"><br>
+                        <input type="submit" value="Update" id="update" class="signupbtn"
+                            onclick="update1(); return false;">
+                        <input type="reset" value="Cancel" class="resetbtn">
+
+                    </div>
+                </div>
+
+    </div>
+
+    </form>
+    </div>
+
+
+
+</body>
+
+</html>
